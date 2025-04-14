@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Générateur de lien Outlook</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    body {
+        font-family: 'Montserrat', 'Avenir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+        padding: 40px 20px;
+        margin: 0;
+        color: #333;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 800px;
+        margin: auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        animation: fadeIn 0.6s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .logo {
+        display: block;
+        margin: 0 auto 20px;
+        width: 180px;
+        transition: transform 0.3s;
+    }
+    .logo:hover {
+        transform: scale(1.05);
+    }
+    h1 {
+        text-align: center;
+        color: #00356e;
+        font-weight: 600;
+        margin-bottom: 30px;
+        font-size: 28px;
+    }
+    h3 {
+        color: #00356e;
+        font-weight: 600;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #444;
+    }
+    input, textarea, select {
+        width: 100%;
+        padding: 12px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        transition: all 0.3s;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+    }
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: #00356e;
+        box-shadow: 0 0 0 2px rgba(0,53,110,0.2);
+    }
+    input.valid {
+        border: 2px solid #4CAF50;
+        background-color: #f8fff8;
+    }
+    input[type="checkbox"] {
+        width: auto;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+button {
+    background-color: #f9b122;
+    color: black;
+    border: none;
+    padding: 14px 26px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 25px;
+    width: auto; /* Changé de 70% à auto */
+    min-width: 250px; /* Ajout d'une largeur minimum */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(249, 177, 34, 0.2);
+}
+    button:hover {
+        background-color: #e0a01f;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(249, 177, 34, 0.3);
+    }
+    button:active {
+        transform: translateY(1px);
+    }
+    .output {
+        margin-top: 40px;
+        background: #f9f9f9;
+        padding: 30px;
+        border-radius: 16px;
+        animation: fadeIn 0.5s ease-in-out;
+        text-align: center;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    }
+    .link-preview {
+        background: #ffffff;
+        border: 2px dashed #ccc;
+        border-radius: 12px;
+        padding: 20px;
+        word-wrap: break-word;
+        margin-top: 20px;
+        font-size: 0.95rem;
+        color: #333;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 25px;
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 18px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        min-width: 160px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .btn:active {
+        transform: translateY(1px);
+    }
+    .btn i {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+    .teams-btn {
+        background-color: #6264A7;
+        color: white;
+    }
+    .teams-btn:hover {
+        background-color: #4E5099;
+    }
+    .outlook-btn {
+        background-color: #0078D4;
+        color: white;
+    }
+    .outlook-btn:hover {
+        background-color: #0063B1;
+    }
+    .copy-btn {
+        background-color: #00356e;
+        color: white;
+    }
+    .copy-btn:hover {
+        background-color: #00274e;
+    }
+    .qr-btn {
+        background-color: #34A853;
+        color: white;
+    }
+    .qr-btn:hover {
+        background-color: #2C8C46;
+    }
+    .iframe-btn {
+        background-color: #FF5722;
+        color: white;
+    }
+    .iframe-btn:hover {
+        background-color: #E64A19;
+    }
+    .apple-calendar {
+        background-color: #A2AAAD;
+        color: white;
+    }
+    .apple-calendar:hover {
+        background-color: #83898D;
+    }
+    .card {
+        margin-top: 30px;
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    .qr-code-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .qr-code {
+        margin: 20px 0;
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .qr-options {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 15px 0;
+    }
+    .qr-option {
+        padding: 10px 16px;
+        background: #f0f0f0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.2s;
+        border: 2px solid transparent;
+    }
+    .qr-option:hover {
+        background: #e5e5e5;
+    }
+    .qr-option.active {
+        background: #00356e;
+        color: white;
+        border-color: #00356e;
+    }
+    .qr-size {
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    .qr-size label {
+        margin: 0 10px 0 0;
+        display: inline-block;
+    }
+    .qr-size input {
+        width: 100px;
+        text-align: center;
+    }
+    .download-qr {
+        margin-top: 15px;
+        background: #00356e;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-block;
+        transition: all 0.3s;
+    }
+    .download-qr:hover {
+        background: #00274e;
+        transform: translateY(-2px);
+    }
+    .info-msg {
+        margin-top: 30px;
+        font-size: 0.95em;
+        background: #e6f7ff;
+        border-left: 5px solid #2196F3;
+        padding: 18px;
+        border-radius: 8px;
+        line-height: 1.5;
+    }
+    .error {
+        color: #e53935;
+        margin-top: 5px;
+        font-size: 0.9em;
+        padding: 8px 12px;
+        background: rgba(229, 57, 53, 0.1);
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+    .hidden {
+        display: none;
+    }
+    .iframe-container {
+        margin-top: 30px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    .iframe-code {
+        background: #f5f5f5;
+        padding: 18px;
+        border-radius: 8px;
+        margin-top: 15px;
+        font-family: monospace;
+        text-align: left;
+        white-space: pre-wrap;
+        overflow-x: auto;
+        border: 1px solid #ddd;
+        font-size: 14px;
+    }
+    .copy-iframe-btn {
+        background: #00356e;
+        color: white;
+        padding: 10px 20px;
+        margin-top: 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-block;
+        transition: all 0.3s;
+        border: none;
+    }
+    .copy-iframe-btn:hover {
+        background: #00274e;
+    }
+    .step-indicator {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+    .step {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 30px;
+        position: relative;
+        font-weight: bold;
+        color: #666;
+        border: 2px solid #ddd;
+    }
+    .step.active {
+        background: #00356e;
+        color: white;
+        border-color: #00356e;
+    }
+    .step::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        width: 60px;
+        height: 2px;
+        background: #ddd;
+        transform: translateY(-50%);
+    }
+    .step:last-child::after {
+        display: none;
+    }
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .checkbox-wrapper label {
+        margin: 0;
+        cursor: pointer;
+    }
+    
+    /* Animation pour les boutons */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    /*.generate-btn {
+        animation: pulse 2s infinite;
+    }
+    
+    /* Animation pour les sections */
+    .section-transition {
+        transition: all 0.5s ease-in-out;
+    }
+    
+    /* Design responsive */
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px;
+        }
+        .action-buttons {
+            flex-direction: column;
+        }
+        .btn {
+            width: 100%;
+        }
+    }
+    
+    /* Tooltips */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        margin-left: 8px;
+        width: 16px;
+        height: 16px;
+        background: #ccc;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 16px;
+        font-size: 12px;
+        cursor: help;
+    }
+    .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 200px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 12px;
+        font-weight: normal;
+    }
+    .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    /* Icônes */
+    .icon {
+        margin-right: 8px;
+    }
+    
+    /* Notification */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: #4CAF50;
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transform: translateX(150%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000;
+    }
+    .notification.show {
+        transform: translateX(0);
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+    <img src="https://img.icons8.com/color/512/html-5--v2.png" alt="generaor_Logo" class="logo">
+    <h1>Créer un lien d'invitation Outlook</h1>
+
+    <div class="form-group">
+        <label for="title">
+            <i class="fas fa-heading icon"></i>Titre *
+        </label>
+        <input type="text" id="title" placeholder="Ex : Communication : organisation 2025">
+    </div>
+
+    <div class="form-group">
+        <label for="teamsLink">
+            <i class="fas fa-video icon"></i>Lien Teams *
+        </label>
+        <input type="url" id="teamsLink" placeholder="https://teams.microsoft.com/...">
+    </div>
+
+    <div class="form-group">
+        <label for="meetingId">
+            <i class="fas fa-hashtag icon"></i>ID de réunion *
+            <span class="tooltip">?
+                <span class="tooltip-text">Les espaces sont conservés tels quels dans l'ID</span>
+            </span>
+        </label>
+        <input type="text" id="meetingId" placeholder="Ex : 360 690 417 785" onkeyup="validateMeetingId(this)">
+    </div>
+
+    <div class="form-group">
+        <label for="passcode">
+            <i class="fas fa-key icon"></i>Code secret *
+        </label>
+        <input type="text" id="passcode" placeholder="Ex : Sx9KM6DL">
+    </div>
+
+    <div class="checkbox-wrapper">
+        <input type="checkbox" id="allDay" onchange="toggleAllDay()">
+        <label for="allDay">Toute la journée</label>
+    </div>
+
+    <div id="datetimeRange">
+        <div class="form-group">
+            <label for="start">
+                <i class="far fa-calendar-alt icon"></i>Date et heure de début *
+            </label>
+            <input type="datetime-local" id="start" onchange="updateEndTime()">
+        </div>
+        <div class="form-group">
+            <label for="end">
+                <i class="far fa-calendar-check icon"></i>Date et heure de fin *
+            </label>
+            <input type="datetime-local" id="end">
+        </div>
+    </div>
+
+    <div id="dateOnly" class="hidden">
+        <div class="form-group">
+            <label for="allDayDate">
+                <i class="far fa-calendar icon"></i>Date *
+            </label>
+            <input type="date" id="allDayDate">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="location">
+            <i class="fas fa-map-marker-alt icon"></i>Lieu *
+        </label>
+        <input type="text" id="location" value="Réunion Microsoft Teams">
+    </div>
+
+    <div class="error hidden" id="errorMsg"></div>
+
+    <button class="generate-btn" onclick="generateLink()">
+        <i class="fas fa-magic icon"></i>Générer le lien Outlook
+    </button>
+
+    <div class="output hidden" id="output"></div>
+    
+    <div class="info-msg">
+        <i class="fas fa-info-circle icon"></i> Ce générateur vous permet de créer facilement des liens pour inviter vos collaborateurs à des réunions Teams via Outlook. Il suffit de remplir les informations ci-dessus et de cliquer sur "Générer le lien Outlook".
+    </div>
+    
+    <div class="iframe-container hidden" id="iframe-container">
+        <h3><i class="fas fa-code icon"></i>Code iframe</h3>
+        <p>Utilisez ce code pour intégrer l'invitation dans une page web :</p>
+        <div class="iframe-code" id="iframe-code"></div>
+        <button class="copy-iframe-btn" id="copy-iframe-btn">
+            <i class="fas fa-copy icon"></i>Copier le code
+        </button>
+    </div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+// Définir la date et l'heure par défaut
+window.onload = function() {
+    const now = new Date();
+    
+    // Format de la date pour l'input datetime-local
+    const formatDateTimeForInput = (date) => {
+        return date.getFullYear() + '-' + 
+               String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+               String(date.getDate()).padStart(2, '0') + 'T' + 
+               String(date.getHours()).padStart(2, '0') + ':' + 
+               String(date.getMinutes()).padStart(2, '0');
+    };
+    
+    // Format de la date pour l'input date
+    const formatDateForInput = (date) => {
+        return date.getFullYear() + '-' + 
+               String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+               String(date.getDate()).padStart(2, '0');
+    };
+    
+    // Date de début = maintenant (arrondi aux 5 minutes)
+    const startDate = new Date(now);
+    startDate.setMinutes(Math.ceil(startDate.getMinutes() / 5) * 5);
+    
+    // Date de fin = une heure après la date de début
+    const endDate = new Date(startDate);
+    endDate.setHours(endDate.getHours() + 1);
+    
+    // Définir les valeurs par défaut
+    document.getElementById('start').value = formatDateTimeForInput(startDate);
+    document.getElementById('end').value = formatDateTimeForInput(endDate);
+    document.getElementById('allDayDate').value = formatDateForInput(now);
+};
+
+function encodeURLParam(str) {
+    return encodeURIComponent(str).replace(/[!'()*]/g, escape);
+}
+
+function validateMeetingId(input) {
+    // On vérifie que l'ID contient uniquement des chiffres et des espaces
+    const invalidChars = input.value.replace(/[\d\s]/g, '');
+    if (invalidChars.length > 0) {
+        showError("L'ID de réunion ne doit contenir que des chiffres et des espaces");
+    } else {
+        hideError();
+    }
+}
+
+function toggleAllDay() {
+    const allDay = document.getElementById('allDay').checked;
+    document.getElementById('datetimeRange').classList.toggle('hidden', allDay);
+    document.getElementById('dateOnly').classList.toggle('hidden', !allDay);
+}
+
+function updateEndTime() {
+    const startInput = document.getElementById('start');
+    const endInput = document.getElementById('end');
+    
+    if (startInput.value) {
+        const startTime = new Date(startInput.value);
+        const endTime = new Date(endInput.value || startInput.value);
+        
+        // Si la date de fin est avant la date de début, ajuster à 1 heure après le début
+        if (endTime <= startTime) {
+            const newEndTime = new Date(startTime);
+            newEndTime.setHours(newEndTime.getHours() + 1);
+            
+            // Format pour l'input datetime-local
+            const formattedEndTime = newEndTime.getFullYear() + '-' + 
+                                   String(newEndTime.getMonth() + 1).padStart(2, '0') + '-' + 
+                                   String(newEndTime.getDate()).padStart(2, '0') + 'T' + 
+                                   String(newEndTime.getHours()).padStart(2, '0') + ':' + 
+                                   String(newEndTime.getMinutes()).padStart(2, '0');
+            
+            endInput.value = formattedEndTime;
+        }
+    }
+}
+
+const inputs = document.querySelectorAll('input[type="text"], input[type="url"], input[type="datetime-local"], input[type="date"]');
+inputs.forEach(input => {
+    input.addEventListener("input", () => {
+        if (input.value.trim() !== "") {
+            input.classList.add("valid");
+        } else {
+            input.classList.remove("valid");
+        }
+    });
+});
+
+function showError(message) {
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.textContent = message;
+    errorMsg.classList.remove('hidden');
+}
+
+function hideError() {
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.classList.add('hidden');
+}
+
+function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = 'notification';
+    
+    if (type === 'success') {
+        notification.style.backgroundColor = '#4CAF50';
+    } else if (type === 'error') {
+        notification.style.backgroundColor = '#e53935';
+    } else if (type === 'info') {
+        notification.style.backgroundColor = '#2196F3';
+    }
+    
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
+function generateLink() {
+    const title = document.getElementById('title').value.trim();
+    const link = document.getElementById('teamsLink').value.trim();
+    const meetingId = document.getElementById('meetingId').value;  // Conserver les espaces originaux
+    const passcode = document.getElementById('passcode').value.trim();
+    const location = document.getElementById('location').value.trim();
+    const allDay = document.getElementById('allDay').checked;
+    const start = allDay ? document.getElementById('allDayDate').value : document.getElementById('start').value;
+    const end = allDay ? document.getElementById('allDayDate').value : document.getElementById('end').value;
+
+    hideError();
+
+    if (!title || !link || !meetingId || !passcode || !start || !location) {
+        showError("Merci de remplir tous les champs obligatoires.");
+        return;
+    }
+
+    // Vérifier que l'ID contient uniquement des chiffres et espaces
+    if (!/^[\d\s]+$/.test(meetingId)) {
+        showError("L'ID de réunion doit contenir uniquement des chiffres et des espaces.");
+        return;
+    }
+
+    const startDate = allDay ? new Date(start + 'T00:00:00') : new Date(start);
+    const endDate = allDay ? new Date(end + 'T23:59:59') : new Date(end);
+
+    if (endDate < startDate) {
+        showError("La date de fin ne peut pas être antérieure à la date de début.");
+        return;
+    }
+
+    const startISO = startDate.toISOString();
+    const endISO = endDate.toISOString();
+    const outlookLink = `https://outlook.office.com/calendar/0/deeplink/compose?subject=${encodeURLParam(title)}&body=${encodeURLParam(`Rejoignez la réunion Teams ici : ${link}\nID : ${meetingId}\nCode : ${passcode}`)}&startdt=${startISO}&enddt=${endISO}&location=${encodeURLParam(location)}`;
+
+    // Format Apple iCal date format
+    const iCalStart = startISO.replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const iCalEnd = endISO.replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Foncia//Meeting Generator//FR
+BEGIN:VEVENT
+SUMMARY:${title}
+DTSTART:${iCalStart}
+DTEND:${iCalEnd}
+LOCATION:${location}
+DESCRIPTION:Rejoignez Teams ici: ${link}\\nID: ${meetingId}\\nCode: ${passcode}
+END:VEVENT
+END:VCALENDAR`;
+
+    const icsBlob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const icsUrl = URL.createObjectURL(icsBlob);
+
+    // Iframe code
+    const iframeCode = `<iframe src="${outlookLink}" width="100%" height="500" frameborder="0" style="border: 1px solid #ccc; border-radius: 8px;"></iframe>`;
+
+    const calendarPreview = `
+        <h3><i class="fas fa-calendar-check icon"></i>${title}</h3>
+        <p><strong><i class="far fa-clock icon"></i>Date :</strong> ${allDay ? new Date(start).toLocaleDateString() : new Date(start).toLocaleString()}<br>
+        <strong><i class="fas fa-map-marker-alt icon"></i>Lieu :</strong> ${location}</p>
+        <div class="link-preview">
+            <a href="${outlookLink}" target="_blank">${outlookLink}</a>
+        </div>
+        
+        <div class="action-buttons">
+            <a class="btn copy-btn" onclick="copyToClipboard('${outlookLink}')">
+                <i class="fas fa-copy"></i> Copier le lien
+            </a>
+            <a href="${link}" target="_blank" class="btn teams-btn">
+                <i class="fas fa-video"></i> Rejoindre Teams
+            </a>
+            <a href="${outlookLink}" target="_blank" class="btn outlook-btn">
+                <i class="far fa-calendar-plus"></i> Ajouter à Outlook
+            </a>
+            <a href="${icsUrl}" download="${title.replace(/[^a-z0-9]/gi, '_')}.ics" class="btn apple-calendar">
+                <i class="fas fa-mobile-alt"></i> Apple Calendar
+            </a>
+            <a class="btn qr-btn" onclick="showQRCode('${outlookLink}', '${title}')">
+                <i class="fas fa-qrcode"></i> Générer QR Code
+            </a>
+            <a class="btn iframe-btn" onclick="showIframeCode('${iframeCode}')">
+                <i class="fas fa-code"></i> Code Iframe
+            </a>
+        </div>
+        
+        <div class="card hidden" id="qrCodeContainer">
+            <h3><i class="fas fa-qrcode icon"></i>QR Code de l'invitation</h3>
+            
+            <div class="qr-options">
+                <div class="qr-option active" onclick="changeQRFormat('svg')">SVG Noir</div>
+                <div class="qr-option" onclick="changeQRFormat('png-white')">PNG + Fond Blanc</div>
+                <div class="qr-option" onclick="changeQRFormat('png-transparent')">PNG Transparent</div>
+            </div>
+            
+            <div class="qr-size">
+                <label for="qrSize">Taille:</label>
+                <input type="number" id="qrSize" value="300" min="100" max="1080" onchange="updateQRSize()">
+                <span>px</span>
+            </div>
+            
+            <div class="qr-code" id="qrcode"></div>
+            <a class="download-qr" id="downloadQR">
+                <i class="fas fa-download"></i> Télécharger le QR Code
+            </a>
+        </div>
+    `;
+
+    const outputElement = document.getElementById('output');
+    outputElement.innerHTML = calendarPreview;
+    outputElement.classList.remove('hidden');
+    
+    // Masquer le conteneur iframe quand un nouveau lien est généré
+    document.getElementById('iframe-container').classList.add('hidden');
+    
+    // Scroll vers le résultat
+    outputElement.scrollIntoView({ behavior: 'smooth' });
+    
+    showNotification("Lien généré avec succès!");
+}
+
+function showQRCode(link, title) {
+    const qrContainer = document.getElementById('qrCodeContainer');
+    const qrCodeElement = document.getElementById('qrcode');
+    qrCodeElement.innerHTML = '';
+    qrContainer.classList.remove('hidden');
+    
+    // Configuration par défaut
+    let qrSize = parseInt(document.getElementById('qrSize').value) || 300;
+    generateQRCode(link, qrCodeElement, qrSize, 'svg');
+    
+    // Lien de téléchargement
+    const downloadLink = document.getElementById('downloadQR');
+    downloadLink.onclick = function() {
+        downloadQRCode(link, title, 'svg');
+    };
+    
+    // Scroll vers le QR code
+    qrContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+function changeQRFormat(format) {
+    // Mettre à jour la classe active
+    document.querySelectorAll('.qr-option').forEach(el => el.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Régénérer le QR code avec le nouveau format
+    const link = document.querySelector('.link-preview a').href;
+    const qrCodeElement = document.getElementById('qrcode');
+    qrCodeElement.innerHTML = '';
+    let qrSize = parseInt(document.getElementById('qrSize').value) || 300;
+    
+    generateQRCode(link, qrCodeElement, qrSize, format);
+    
+    // Mettre à jour le lien de téléchargement
+    const title = document.querySelector('.output h3').textContent.replace(/<[^>]*>/g, '');
+    const downloadLink = document.getElementById('downloadQR');
+    downloadLink.onclick = function() {
+        downloadQRCode(link, title, format);
+    };
+}
+
+function updateQRSize() {
+    // Récupérer la taille et le format actuels
+    let qrSize = parseInt(document.getElementById('qrSize').value) || 300;
+    const format = document.querySelector('.qr-option.active').textContent.toLowerCase().includes('svg') ? 'svg' : 
+                  document.querySelector('.qr-option.active').textContent.toLowerCase().includes('transparent') ? 'png-transparent' : 'png-white';
+    
+    // Limiter la taille
+    if (qrSize < 100) qrSize = 100;
+    if (qrSize > 1080) qrSize = 1080;
+    document.getElementById('qrSize').value = qrSize;
+    
+    // Régénérer le QR code
+    const link = document.querySelector('.link-preview a').href;
+    const qrCodeElement = document.getElementById('qrcode');
+    qrCodeElement.innerHTML = '';
+    
+    generateQRCode(link, qrCodeElement, qrSize, format);
+}
+
+function generateQRCode(data, element, size, format) {
+    if (format === 'svg') {
+        // Utiliser une approche différente pour le SVG
+        const options = {
+            errorCorrectionLevel: 'H',
+            type: 'svg',
+            width: size,
+            height: size,
+            margin: 0,
+            color: {
+                dark: '#000000',
+                light: '#ffffff00'  // Transparent
+            }
+        };
+        
+        QRCode.toString(data, options, function(error, svgString) {
+            if (error) {
+                console.error(error);
+                return;
+            }
+            element.innerHTML = svgString;
+        });
+    } else {
+        // PNG options - reste inchangé
+        const backgroundColor = format === 'png-transparent' ? '#ffffff00' : '#ffffff';
+        QRCode.toCanvas(document.createElement('canvas'), data, {
+            width: size,
+            height: size,
+            margin: 0,
+            color: {
+                dark: '#000000',
+                light: backgroundColor
+            }
+        }, function(error, canvas) {
+            if (error) {
+                console.error(error);
+                return;
+            }
+            element.appendChild(canvas);
+        });
+    }
+}
+
+function downloadQRCode(data, title, format) {
+    const fileName = (title || 'qrcode').replace(/[^a-z0-9]/gi, '_');
+    
+    if (format === 'svg') {
+        // Télécharger en SVG
+        const svgContent = document.getElementById('qrcode').innerHTML;
+        const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        downloadFile(url, fileName + '.svg');
+    } else {
+        // Télécharger en PNG
+        const canvas = document.getElementById('qrcode').querySelector('canvas');
+        if (canvas) {
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                downloadFile(url, fileName + '.png');
+            });
+        }
+    }
+}
+
+function downloadFile(url, fileName) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        showNotification('Lien copié dans le presse-papiers!');
+    }, function(err) {
+        showNotification('Erreur lors de la copie: ' + err, 'error');
+    });
+}
+
+function showIframeCode(code) {
+    const iframeContainer = document.getElementById('iframe-container');
+    const iframeCode = document.getElementById('iframe-code');
+    
+    iframeCode.textContent = code;
+    iframeContainer.classList.remove('hidden');
+    
+    // Button de copie du code iframe
+    document.getElementById('copy-iframe-btn').onclick = function() {
+        navigator.clipboard.writeText(code).then(function() {
+            showNotification('Code iframe copié!');
+        }, function(err) {
+            showNotification('Erreur lors de la copie: ' + err, 'error');
+        });
+    };
+    
+    // Scroll vers le conteneur
+    iframeContainer.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
